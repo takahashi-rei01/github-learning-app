@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI開発まなびポータル</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#1f2937;--main:#2563eb;--border:#e2e8f0;--green:#16a34a;--code:#0f172a}
+*{box-sizing:border-box}body{margin:0;font-family:Meiryo,"Hiragino Sans",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.75}
+header{background:linear-gradient(135deg,#111827,#2563eb);color:#fff;padding:34px 18px 56px}.inner,main{max-width:1100px;margin:auto}
+h1{margin:0 0 8px;font-size:32px}h2{border-left:6px solid var(--main);padding-left:10px;margin-top:0}.eyebrow{font-weight:bold;opacity:.9}
+main{margin-top:-34px;padding:0 14px 40px}.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+.tabs{display:flex;gap:8px;overflow-x:auto;position:sticky;top:0;background:var(--bg);padding-bottom:8px;margin-bottom:16px;z-index:5}.tab{border:1px solid var(--border);background:#fff;color:#1e40af;padding:10px 14px;border-radius:999px;font-weight:bold;white-space:nowrap}.tab.active{background:var(--main);color:#fff}
+.section{display:none}.section.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.box{border:1px solid var(--border);border-radius:16px;padding:16px;background:#f8fafc}.done{background:#f0fdf4;border-color:#86efac}
+button{border:0;border-radius:999px;padding:10px 15px;background:#e0ecff;color:#1d4ed8;font-weight:bold;cursor:pointer}.primary{background:var(--main);color:#fff}.reset{background:#fee2e2;color:#b91c1c}
+.progress-wrap{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden}#progressBar{height:100%;width:0;background:var(--green);transition:.2s}
+code,pre{background:var(--code);color:#e2e8f0;border-radius:12px}code{padding:3px 7px}pre{padding:14px;overflow:auto}
+.flow{display:grid;gap:10px}.step{display:grid;grid-template-columns:44px 1fr;gap:12px;background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:12px}.num{width:36px;height:36px;border-radius:50%;background:var(--main);color:#fff;display:grid;place-items:center;font-weight:bold}
+details{border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff;margin:10px 0}summary{font-weight:bold;color:#1e40af}
+.flash-wrap{perspective:1200px;max-width:700px;margin:auto}.flash{min-height:330px;position:relative;transform-style:preserve-3d;transition:.45s;cursor:pointer}.flash.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--border);border-radius:24px;padding:28px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 16px 34px rgba(15,23,42,.13);background:linear-gradient(180deg,#fff,#eef4ff)}
+.back{transform:rotateY(180deg);background:linear-gradient(180deg,#fff,#f0fdf4)}.cat{display:inline-block;width:max-content;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:5px 12px;font-weight:bold}.word{font-size:42px;font-weight:800;margin:16px 0 4px}.kana{color:#64748b;font-weight:bold}.desc{font-size:22px;font-weight:bold;color:#14532d}.example{margin-top:18px;border:1px dashed #86efac;border-radius:14px;padding:12px;background:rgba(255,255,255,.8)}
+.nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.chip{border:1px solid var(--border);border-radius:999px;padding:8px;background:#fff;text-align:center;font-weight:bold}.chip.active{background:var(--main);color:#fff}
+textarea{width:100%;min-height:150px;border:1px solid var(--border);border-radius:12px;padding:12px;font-family:inherit;font-size:16px}.quizq{background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}.quizq label{display:block;margin:8px 0}
+@media(max-width:780px){h1{font-size:25px}.grid,.chips{grid-template-columns:1fr}.word{font-size:34px}.desc{font-size:19px}.flash{min-height:350px}}
+</style>
+</head>
+<body>
+<header><div class="inner"><p class="eyebrow">GitHub × VSCode × Codex × Claude Code</p><h1>AI開発まなびポータル</h1><p>GitHub Pagesで公開しながら、AI開発の知識を単語帳と実務フローで覚える学習サイトです。</p></div></header>
+<main>
+<section class="card"><h2>学習状況</h2><div class="grid"><div class="box"><strong id="doneCount">0</strong><br>完了レッスン</div><div class="box"><strong>24</strong><br>単語帳カード</div></div><div class="progress-wrap"><div id="progressBar"></div></div><p id="progressText">0 / 24 完了</p><button class="reset" onclick="resetProgress()">進捗リセット</button></section>
+<nav class="tabs">
+<button class="tab active" onclick="show('home',this)">全体像</button><button class="tab" onclick="show('flash',this)">単語帳</button><button class="tab" onclick="show('github',this)">GitHub</button><button class="tab" onclick="show('vscode',this)">VSCode</button><button class="tab" onclick="show('codex',this)">Codex</button><button class="tab" onclick="show('claude',this)">Claude Code</button><button class="tab" onclick="show('flow',this)">実務フロー</button><button class="tab" onclick="show('prompt',this)">指示文</button><button class="tab" onclick="show('quiz',this)">クイズ</button>
+</nav>
+
+<section id="home" class="section active"><div class="card"><h2>まず全体像</h2><div class="flow">
+<div class="step"><div class="num">1</div><div><b>GitHub</b><br>コード・履歴・公開サイトを管理する場所。</div></div>
+<div class="step"><div class="num">2</div><div><b>VSCode</b><br>PCでHTML/CSS/JSを編集する作業場所。</div></div>
+<div class="step"><div class="num">3</div><div><b>Codex</b><br>コード作成・修正を依頼する実装担当。</div></div>
+<div class="step"><div class="num">4</div><div><b>Claude Code</b><br>レビュー・設計確認・危険な変更の確認担当。</div></div>
+</div></div></section>
+
+<section id="flash" class="section"><div class="card"><h2>用語単語帳</h2><p>カードをタップすると裏面の意味が出ます。</p>
+<div class="nav"><button onclick="filterCards('all')">すべて</button><button onclick="filterCards('GitHub')">GitHub</button><button onclick="filterCards('VSCode')">VSCode</button><button onclick="filterCards('Codex')">Codex</button><button onclick="filterCards('Claude')">Claude</button></div>
+<div class="flash-wrap"><div id="flashCard" class="flash" onclick="flipCard()">
+<div class="face"><span id="cat" class="cat"></span><div id="word" class="word"></div><div id="kana" class="kana"></div><p>タップして意味を見る</p></div>
+<div class="face back"><span id="cat2" class="cat"></span><div id="desc" class="desc"></div><div id="example" class="example"></div></div>
+</div></div>
+<div class="nav"><button onclick="prevCard(event)">前へ</button><button class="primary" onclick="flipCard(event)">めくる</button><button onclick="nextCard(event)">次へ</button><button onclick="shuffleCards(event)">シャッフル</button></div>
+<p id="count" style="text-align:center;font-weight:bold;color:#64748b"></p><div id="chips" class="chips"></div>
+</div></section>
+
+<section id="github" class="section"><div class="card"><h2>GitHub</h2><div class="grid" id="githubLessons"></div></div><div class="card"><h2>GitHub Pages更新手順</h2><ol><li>新しい <code>index.html</code> を用意</li><li>GitHubで既存の <code>index.html</code> を開く</li><li>Upload files または鉛筆マークで差し替え</li><li>Commit changes</li><li>数分後に公開URLへ反映</li></ol></div></section>
+<section id="vscode" class="section"><div class="card"><h2>VSCode</h2><div class="grid" id="vscodeLessons"></div></div><div class="card"><details open><summary>Live Server</summary><p>HTMLをブラウザで確認しながら編集できます。</p></details><details><summary>ソース管理</summary><p>変更ファイルを確認し、コミットできます。</p></details></div></section>
+<section id="codex" class="section"><div class="card"><h2>Codex</h2><div class="grid" id="codexLessons"></div></div><div class="card"><h2>依頼の型</h2><pre>目的：
+〇〇を追加したい
+
+条件：
+・既存デザインを崩さない
+・スマホ対応
+・index.html 1ファイルで動く
+
+やってほしいこと：
+・〇〇タブを追加
+・クイズを追加
+・変更内容を要約</pre></div></section>
+<section id="claude" class="section"><div class="card"><h2>Claude Code</h2><div class="grid" id="claudeLessons"></div></div><div class="card"><h2>レビューの型</h2><pre>変更差分をレビューしてください。
+確認してほしいこと：
+・既存機能を壊していないか
+・不要な変更がないか
+・スマホ表示で崩れないか
+・セキュリティ上問題ないか</pre></div></section>
+<section id="flow" class="section"><div class="card"><h2>実務フロー</h2><div class="flow">
+<div class="step"><div class="num">1</div><div>要件をMarkdownに書く</div></div><div class="step"><div class="num">2</div><div>Codexに小さく実装依頼</div></div><div class="step"><div class="num">3</div><div>VSCodeで動作確認</div></div><div class="step"><div class="num">4</div><div>Claude Codeでレビュー</div></div><div class="step"><div class="num">5</div><div>GitHubへコミット・プッシュ</div></div><div class="step"><div class="num">6</div><div>GitHub Pagesで確認</div></div>
+</div></div></section>
+<section id="prompt" class="section"><div class="card"><h2>指示文テンプレ</h2><details open><summary>Codex向け</summary><pre>index.htmlに新しいタブを追加してください。
+既存デザインを維持し、スマホでも見やすくしてください。</pre></details><details><summary>Claude Code向け</summary><pre>この変更差分をレビューしてください。
+危険な変更、不要な変更、表示崩れを確認してください。</pre></details><h2>自分用メモ</h2><textarea id="memo"></textarea><p><button class="primary" onclick="saveMemo()">保存</button></p><p id="memoResult"></p></div></section>
+<section id="quiz" class="section"><div class="card"><h2>確認クイズ</h2><div id="quizBox"></div><button class="primary" onclick="checkQuiz()">答え合わせ</button><p id="quizResult" class="result"></p></div></section>
+</main>
+
+<script>
+const lessons={github:[["repo","リポジトリ","プロジェクトの保管場所です。"],["pages","GitHub Pages","index.htmlをWebサイトとして公開します。"],["commit","コミット","変更を履歴として保存します。"],["branch","ブランチ","本番を壊さず作業する分岐です。"],["pr","Pull Request","変更確認の場所です。"],["readme","README","説明書です。"]],vscode:[["folder","フォルダを開く","作業場所を開きます。"],["edit","ファイル編集","HTML/CSS/JSを編集します。"],["live","Live Server","見た目を確認します。"],["terminal","ターミナル","コマンドを実行します。"],["source","ソース管理","変更を確認します。"],["ext","拡張機能","機能を追加します。"]],codex:[["crole","役割","実装担当として使います。"],["prompt","指示文","目的と条件を分けます。"],["small","小さく依頼","1機能ずつ頼みます。"],["diff","差分確認","変えた場所を確認します。"],["run","動作確認","ブラウザで確認します。"],["handoff","引き継ぎ","レビューへ渡します。"]],claude:[["arole","役割","レビュー担当です。"],["review","差分レビュー","変更内容を確認します。"],["risk","危険検出","壊れそうな変更を見つけます。"],["design","設計相談","作る前に相談します。"],["refactor","整理","コードを読みやすくします。"],["final","最終確認","公開前に確認します。"]]};
+const allIds=Object.values(lessons).flat().map(x=>x[0]);let done=JSON.parse(localStorage.getItem("done")||"[]");
+function show(id,b){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.getElementById(id).classList.add("active");b.classList.add("active")}
+function renderLessons(k,id){document.getElementById(id).innerHTML=lessons[k].map(l=>`<div class="box ${done.includes(l[0])?"done":""}"><h3>${l[1]}</h3><p>${l[2]}</p><button onclick="completeLesson('${l[0]}')">理解した</button></div>`).join("")}
+function completeLesson(id){if(!done.includes(id)){done.push(id);localStorage.setItem("done",JSON.stringify(done))}renderAll()}
+function resetProgress(){done=[];localStorage.removeItem("done");renderAll()}
+function renderProgress(){let p=Math.round(done.length/allIds.length*100);progressBar.style.width=p+"%";progressText.textContent=done.length+" / "+allIds.length+" 完了";doneCount.textContent=done.length}
+function renderAll(){renderLessons("github","githubLessons");renderLessons("vscode","vscodeLessons");renderLessons("codex","codexLessons");renderLessons("claude","claudeLessons");renderProgress()}
+
+const allCards=[
+{cat:"GitHub",word:"Repository",kana:"リポジトリ",desc:"プロジェクトの保管場所です。",example:"例：github-learning-app"},
+{cat:"GitHub",word:"Commit",kana:"コミット",desc:"変更内容を保存する履歴ポイントです。",example:"例：ヘッダー文言を修正"},
+{cat:"GitHub",word:"Push",kana:"プッシュ",desc:"PC側の変更をGitHubへ送る操作です。",example:"git push"},
+{cat:"GitHub",word:"Pull",kana:"プル",desc:"GitHub側の最新状態をPCへ取り込む操作です。",example:"git pull"},
+{cat:"GitHub",word:"Branch",kana:"ブランチ",desc:"本番を壊さず作業するための分岐です。",example:"feature/add-page"},
+{cat:"GitHub",word:"Pull Request",kana:"プルリクエスト",desc:"変更内容を確認してから取り込む場所です。",example:"レビューしてmainへ反映"},
+{cat:"VSCode",word:"Workspace",kana:"ワークスペース",desc:"VSCodeで開いている作業場所です。",example:"プロジェクトフォルダ"},
+{cat:"VSCode",word:"Explorer",kana:"エクスプローラー",desc:"ファイル一覧を表示する場所です。",example:"左側のファイル一覧"},
+{cat:"VSCode",word:"Terminal",kana:"ターミナル",desc:"コマンドを入力する場所です。",example:"git status"},
+{cat:"VSCode",word:"Extension",kana:"拡張機能",desc:"VSCodeに機能を追加するものです。",example:"Live Server"},
+{cat:"VSCode",word:"Live Server",kana:"ライブサーバー",desc:"HTMLをブラウザで確認しながら編集できます。",example:"Open with Live Server"},
+{cat:"VSCode",word:"Source Control",kana:"ソース管理",desc:"変更ファイルやコミットを管理する画面です。",example:"枝分かれアイコン"},
+{cat:"Codex",word:"Prompt",kana:"プロンプト",desc:"AIに出す指示文です。",example:"目的・条件・作業内容"},
+{cat:"Codex",word:"Task",kana:"タスク",desc:"AIに依頼する作業単位です。",example:"単語帳を追加"},
+{cat:"Codex",word:"Diff",kana:"差分",desc:"変更前と変更後の違いです。",example:"どの行が変わったか"},
+{cat:"Codex",word:"Implement",kana:"実装",desc:"実際にコードを作ることです。",example:"タブを追加"},
+{cat:"Codex",word:"Refactor",kana:"リファクタ",desc:"動きは変えずコードを整理することです。",example:"重複を減らす"},
+{cat:"Codex",word:"Debug",kana:"デバッグ",desc:"不具合の原因を探して直すことです。",example:"表示されない原因を確認"},
+{cat:"Claude",word:"Review",kana:"レビュー",desc:"コードや設計に問題がないか確認します。",example:"不要な変更確認"},
+{cat:"Claude",word:"Risk Check",kana:"リスク確認",desc:"壊れそうな変更を見つけます。",example:"APIキー混入確認"},
+{cat:"Claude",word:"Design Review",kana:"設計レビュー",desc:"作る前に構成や方針を確認します。",example:"タブ構成の相談"},
+{cat:"Claude",word:"Handoff",kana:"引き継ぎ",desc:"作業内容を別AIへ渡すことです。",example:"CodexからClaudeへ"},
+{cat:"Claude",word:"Final Check",kana:"最終確認",desc:"公開前の最後の確認です。",example:"GitHub Pages反映前"},
+{cat:"Claude",word:"Suggestion",kana:"提案",desc:"改善案を出してもらうことです。",example:"もっと見やすくする案"}
+];
+let cards=[...allCards],idx=0;
+function renderCard(){let c=cards[idx];flashCard.classList.remove("flipped");cat.textContent=c.cat;cat2.textContent=c.cat;word.textContent=c.word;kana.textContent=c.kana;desc.textContent=c.desc;example.textContent=c.example;count.textContent=(idx+1)+" / "+cards.length;chips.innerHTML=cards.map((x,i)=>`<div class="chip ${i===idx?"active":""}" onclick="jump(${i})">${x.word}</div>`).join("")}
+function flipCard(e){if(e)e.stopPropagation();flashCard.classList.toggle("flipped")}function nextCard(e){if(e)e.stopPropagation();idx=(idx+1)%cards.length;renderCard()}function prevCard(e){if(e)e.stopPropagation();idx=(idx-1+cards.length)%cards.length;renderCard()}
+function shuffleCards(e){if(e)e.stopPropagation();cards.sort(()=>Math.random()-.5);idx=0;renderCard()}function filterCards(catg){cards=catg==="all"?[...allCards]:allCards.filter(c=>c.cat===catg);idx=0;renderCard()}function jump(i){idx=i;renderCard()}
+
+const quiz=[["GitHub Pagesのトップページは？","index.html"],["変更履歴を保存する操作は？","コミット"],["VSCodeでHTMLを確認する拡張機能は？","Live Server"],["Codexに向く役割は？","実装担当"],["Claude Codeに向く役割は？","レビュー担当"]];
+function renderQuiz(){quizBox.innerHTML=quiz.map((q,i)=>`<div class="quizq"><b>Q${i+1}. ${q[0]}</b><label><input type="radio" name="q${i}" value="${q[1]}"> ${q[1]}</label><label><input type="radio" name="q${i}" value="別の答え"> 別の答え</label></div>`).join("")}
+function checkQuiz(){let s=0;quiz.forEach((q,i)=>{let a=document.querySelector(`input[name="q${i}"]:checked`);if(a&&a.value===q[1])s++});quizResult.textContent=quiz.length+"問中 "+s+"問 正解です。"}
+function saveMemo(){localStorage.setItem("memo",memo.value);memoResult.textContent="保存しました。"}
+function loadMemo(){memo.value=localStorage.getItem("memo")||""}
+renderAll();renderCard();renderQuiz();loadMemo();
+</script>
+</body></html>
